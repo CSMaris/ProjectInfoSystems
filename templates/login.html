@@ -10,17 +10,59 @@
 <header class="site-header">
    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
     <div class="container">
-      <div class="collapse navbar-collapse" id="navbarToggle">
-       <div class="navbar-nav">
-          <a class="nav-item nav-link" href="/login">LOGIN</a>
-          <a class="nav-item nav-link" href="/register">REGISTER</a>
-        </div>
-
-      </div>
+        <h1> LOGIN PAGE</h1>
     </div>
    </nav>
 </header>
-LOGIN PAGE
+<div class="container">
+<div class="row">
+<div class="col-md">
+<p>LOG IN</p>
+{% if namePage %}
+    <p>LOGGED</p> <!-- will be shown only if validated->
+{% else %}
+ <form method="post" action="">
+
+   {{ form1.email.label }}
+   {{ form1.email }}
+    <p></p>
+   {{ form1.password.label }}
+
+    {%  if form1.password.errors%}<!-- whether there are errors in the name inputfield I can tell them to the user-->
+    {{ form1.password }}
+      {% for error in form1.password.errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    {% else %}
+        {{ form1.password }}
+    {% endif %}
+
+
+    <p></p>
+
+
+    <p></p>
+    {{ form1.submit }}
+
+
+
+
+</form>
+{% endif %}
+</div>
+<div class="col-md">
+    <p>SIGN UP</p>
+     {{ form2.email.label }}
+   {{ form2.email }}
+    <p></p>
+   {{ form2.password.label }}
+    {{ form2.password }}
+      <p></p>
+    {{ form2.submit }}
+
+</div>
+</div>
+</div>
 
 </body>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
