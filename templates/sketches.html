@@ -1,0 +1,27 @@
+<form method="post" action="">
+
+   {{ form1.email.label }}
+   {{ form1.email }}
+    <p></p>
+   {{ form1.password.label }}
+
+    {%  if form1.password.errors%}<!-- whether there are errors in the name inputfield I can tell them to the user-->
+    {{ form1.password }}
+      {% for error in form1.password.errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    {% else %}
+        {{ form1.password }}
+    {% endif %}
+
+
+    <p></p>
+
+
+    <p></p>
+    {{ form1.submit }}
+
+
+
+
+</form>

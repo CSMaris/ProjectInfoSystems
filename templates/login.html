@@ -17,18 +17,15 @@
 <div class="container">
 <div class="row">
 <div class="col-md">
-<p>LOG IN</p>
-{% if namePage %}
-    <p>LOGGED</p> <!-- will be shown only if validated->
-{% else %}
- <form method="post" action="">
+
+ <form method="post" action={{ url_for('homeC') }}>
 
    {{ form1.email.label }}
    {{ form1.email }}
     <p></p>
    {{ form1.password.label }}
 
-    {%  if form1.password.errors%}<!-- whether there are errors in the name inputfield I can tell them to the user-->
+    {%  if form1.password.errors%}
     {{ form1.password }}
       {% for error in form1.password.errors %}
         <p>{{ error }}</p>
@@ -44,23 +41,11 @@
     <p></p>
     {{ form1.submit }}
 
-
-
-
 </form>
-{% endif %}
+  <a href={{ url_for('signup', _external=True) }}>New around here? Sign up</a>
 </div>
-<div class="col-md">
-    <p>SIGN UP</p>
-     {{ form2.email.label }}
-   {{ form2.email }}
-    <p></p>
-   {{ form2.password.label }}
-    {{ form2.password }}
-      <p></p>
-    {{ form2.submit }}
 
-</div>
+
 </div>
 </div>
 
