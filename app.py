@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 
 
-@app.route('/homeC', methods=['POST','GET'])
+@app.route('/', methods=['POST','GET'])
 def homeC():
     formHomeC=searchCategoryForm()
     return render_template('homeC.html', formHomeC=formHomeC)
