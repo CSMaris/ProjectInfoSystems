@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import *
-from wtforms.validators import *
+from wtforms import SubmitField, validators,SelectField,StringField,PasswordField
+from wtforms.validators import DataRequired,Email,Length
 
 
 class loginForm(FlaskForm):
@@ -18,5 +18,6 @@ class searchCategoryForm(FlaskForm):
     Choices = [('1', 'cat1'),
                 ('2', 'cat2'),
                 ('3', 'cat3')]
+
     category = SelectField('Select category', choices=[Choices],validators=[DataRequired()])
     submit = SubmitField('Search')
