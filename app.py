@@ -1,13 +1,31 @@
 from flask import Flask, request, url_for, render_template, session, redirect
 from forms import *
 import os
+from flask_bootstrap import Bootstrap
 import re
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
+Bootstrap(app)
+
+data = [
+    {
+        'title': 'supermarket1',
+        'content':'description'
+    },
+{
+        'title': 'supermarket2',
+        'content':'description'
+    }
+
+]
+
+@app.route('/product', methods=['POST','GET'])
+def product():
+    return render_template('productpage.html', markets=data)
 
 
-@app.route('/', methods=['POST','GET'])
+@app.route('/homec', methods=['POST','GET'])
 def homec():
     formhomec=searchCategoryForm()
     return render_template('homec.html', formhomec=formhomec)
@@ -15,11 +33,10 @@ def homec():
 @app.route('/loginPage', methods=['POST', 'GET'])
 def log():
     form1=loginForm()
-    namePage=""
     if form1.validate_on_submit():
-        session['email1'] = form1.email.data
-        session['password1'] = form1.password.data
-    return render_template('login.html', form1=form1, namePage=session.get('email1', False) )
+        return redirect(url_for('homec') )
+    else:
+        return render_template('login.html', form1=form1)
 
 @app.route('/signupPage', methods=['POST','GET'])
 def signup():
@@ -31,31 +48,7 @@ def signup():
 
     return render_template('signup.html', form2=form2 )
 
-data = [
-    {
-        'title': 'product1',
-        'content':'Please Use Python 2.7.15 for Windows10',
-        'author': 'Mohammad',
-        'date': '14 Nov 2018'
-    },
-{
-        'title': 'Second Lesson',
-        'content':'Please Use Python 2.7.15 for Windows10',
-        'author': 'Mohammad',
-        'date': '12 Nov 2018'
-    },
-{
-        'title': 'Third Lesson',
-        'content':'Please Use Python 2.7.15 for Windows10',
-        'author': 'Mohammad',
-        'date': '10 Nov 2018'
-    }
-]
-
-
-
-
-@app.route('/',methods=['POST','GET'] )
+@app.route('/products',methods=['POST','GET'] )
 def products():
  path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
  list = os.listdir(path)
@@ -63,7 +56,6 @@ def products():
  for immagine in list:
      nome=immagine.replace('.jpg', '')
      images[nome]=(url_for('static', filename=immagine))
-
 
  del(images['style.css'])
 
