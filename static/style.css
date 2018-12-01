@@ -7,8 +7,9 @@ body {
 h1, h2, h3, h4, h5, h6 {
   color: #444444;
 }
-
-
+body{
+  background-image: url("https://images.wallpaperscraft.com/image/bananas_fruit_many_107223_1920x1080.jpg");
+}
 .bg-steel {
   background-color: #5f788a;
 }

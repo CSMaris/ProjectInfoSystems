@@ -2,7 +2,7 @@ from flask import Flask, request, url_for, render_template, session, redirect
 from forms import *
 import os
 from flask_bootstrap import Bootstrap
-import re
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
@@ -11,24 +11,45 @@ Bootstrap(app)
 data = [
     {
         'title': 'supermarket1',
-        'content':'description'
+        'content':'price 1'
     },
 {
         'title': 'supermarket2',
-        'content':'description'
+        'content':'price 2'
     }
 
 ]
 
 @app.route('/product', methods=['POST','GET'])
 def product():
-    return render_template('productpage.html', markets=data)
+
+    formQ=BuyForm()
+    formC=CommentForm()
+
+    if formQ.is_submitted() | formC.is_submitted():
+      if request.form['which-form'] == 'formQ':
+       if formQ.is_submitted():
+         #update DB
+         print("SUBMITTED Q")
+         return render_template('productpage.html', markets=data, formQ=formQ, formC=formC)
+
+      if request.form['which-form'] == 'formC':
+         #update DB
+         print("SUBMITTED C")
+         return render_template('productpage.html', markets=data, formQ=formQ, formC=formC)
+
+    return render_template('productpage.html', markets=data, formQ=formQ, formC=formC)
 
 
 @app.route('/homec', methods=['POST','GET'])
 def homec():
     formhomec=searchCategoryForm()
     return render_template('homec.html', formhomec=formhomec)
+
+@app.route('/profile', methods=['POST','GET'])
+def profile():
+    form=ProfileForm()
+    return render_template('profile.html', form=form)
 
 @app.route('/loginPage', methods=['POST', 'GET'])
 def log():
