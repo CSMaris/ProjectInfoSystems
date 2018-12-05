@@ -13,11 +13,17 @@ class signupForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=20)])
 
 class searchCategoryForm(FlaskForm):
-    Choices = [('1', 'cat1'),
-                ('2', 'cat2'),
-                ('3', 'cat3')]
+    Choices = []
 
     category = SelectField('Select category', choices=Choices ,validators=[InputRequired()])
+
+    def myChoices(self,var1):
+        newC=[]
+        for x in var1:
+           newC.append(x)
+        self.category.choices=newC
+
+
 
 class BuyForm(FlaskForm):
     quantities=[('1','1'),

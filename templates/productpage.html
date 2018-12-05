@@ -37,7 +37,6 @@
 
 
 
-
 </div>
 <div class="col-md">
 <div class="content-section">
@@ -50,12 +49,54 @@
           </div>
 
 </div>
- <form  method="post" action="">
-     <input type="hidden" name="which-form" value="formC">
+
+
+
+    <form class="rating" method="post" action="">
+          <input type="hidden" name="which-form" value="formC">
      {{ formC.csrf_token() }}
      {{ wtf.form_field(formC.comment, class='form-control') }}
-    <input type=submit value ='Leave your comment'  class='btn btn-primary'>
+        <h7>Please leave a rate</h7>
+        <br>
+  <label>
+    <input type="radio" name="stars" value="1" />
+    <span class="icon">★</span>
+  </label>
+        <br>
+  <label>
+    <input type="radio" name="stars" value="2" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+        <br>
+  <label>
+    <input type="radio" name="stars" value="3" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+        <br>
+  <label>
+    <input type="radio" name="stars" value="4" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+        <br>
+  <label>
+    <input type="radio" name="stars" value="5" />
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+    <span class="icon">★</span>
+  </label>
+        <br>
+        <input type=submit value ='Leave your comment'  class='btn btn-primary'>
 </form>
+
+
 
 </div>
 </div>
@@ -66,6 +107,8 @@
 if ( window.history.replaceState ) {
   window.history.replaceState( null, null, window.location.href );
 }
+
+
 </script>
 </footer>
 

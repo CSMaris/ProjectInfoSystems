@@ -8,17 +8,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
 
-data = [
-    {
-        'title': 'supermarket1',
-        'content':'price 1'
-    },
-{
-        'title': 'supermarket2',
-        'content':'price 2'
-    }
-
-]
+data=[('category1','cat1'),( 'category2','cat2'),( 'category3','cat3')]
 
 @app.route('/product', methods=['POST','GET'])
 def product():
@@ -44,6 +34,7 @@ def product():
 @app.route('/homec', methods=['POST','GET'])
 def homec():
     formhomec=searchCategoryForm()
+    formhomec.myChoices(data)
     return render_template('homec.html', formhomec=formhomec)
 
 @app.route('/profile', methods=['POST','GET'])
