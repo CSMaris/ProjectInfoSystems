@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, request, url_for, render_template, session, redirect
 from forms import *
 import os
@@ -9,6 +10,15 @@ app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
 
 data=[('category1','cat1'),( 'category2','cat2'),( 'category3','cat3')]
+
+@app.route('/homes',methods=['POST','GET'])
+def homes():
+    return render_template('homes.html')
+@app.route('/newProduct',methods=['POST','GET'])
+def newProduct():
+    form= NewProductForm()
+    #have to validate price input before submitting
+    return render_template('newProduct.html',form=form)
 
 @app.route('/product', methods=['POST','GET'])
 def product():
@@ -65,13 +75,16 @@ def products():
  path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
  list = os.listdir(path)
  images={}
+ filterForm=FilterForm()
+
+
  for immagine in list:
      nome=immagine.replace('.jpg', '')
      images[nome]=(url_for('static', filename=immagine))
 
  del(images['style.css'])
 
- return render_template('productspage.html', immagini=images)
+ return render_template('productspage.html', immagini=images, filterForm=filterForm)
 
 
 if __name__ == '__main__':

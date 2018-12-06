@@ -2,6 +2,7 @@ body {
   background: #fafafa;
   color: #333333;
   margin-top: 5rem;
+  ackground-image: url("https://images.wallpaperscraft.com/image/bananas_fruit_many_107223_1920x1080.jpg");
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -9,22 +10,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h7{
-  color: darkred;
+  color: green;
 }
-body{
-  background-image: url("https://images.wallpaperscraft.com/image/bananas_fruit_many_107223_1920x1080.jpg");
-}
+
 .bg-steel {
-  background-color: #5f788a;
+  background-color: burlywood;
 }
 
 
 .site-header .navbar-nav .nav-link {
-  color: #cbd5db;
+  color: brown;
 }
 
 .site-header .navbar-nav .nav-link:hover {
-  color: #ffffff;
+  color: brown;
 }
 
 .site-header .navbar-nav .nav-link.active {
@@ -32,7 +31,7 @@ body{
 }
 
 .content-section {
-  background: #ffffff;
+  background: brown;
   padding: 10px 20px;
   border: 1px solid #dddddd;
   border-radius: 3px;
@@ -40,7 +39,7 @@ body{
 }
 
 .article-title {
-  color: #444444;
+  color: brown;
 }
 
 a.article-title:hover {
@@ -102,34 +101,52 @@ a.article-title:hover {
   cursor: pointer;
 }
 
-.rating {
-    float:left;
-    width:300px;
+.rating label:last-child {
+  position: static;
 }
-.rating span { float:right; position:relative; }
-.rating span input {
-    position:absolute;
-    top:0px;
-    left:0px;
-    opacity:0;
+
+.rating label:nth-child(1) {
+  z-index: 5;
 }
-.rating span label {
-    display:inline-block;
-    width:30px;
-    height:30px;
-    text-align:center;
-    color:#FFF;
-    background:#ccc;
-    font-size:30px;
-    margin-right:2px;
-    line-height:30px;
-    border-radius:50%;
-    -webkit-border-radius:50%;
+
+.rating label:nth-child(2) {
+  z-index: 4;
 }
-.rating span:hover ~ span label,
-.rating span:hover label,
-.rating span.checked label,
-.rating span.checked ~ span label {
-    background:#F90;
-    color:#FFF;
+
+.rating label:nth-child(3) {
+  z-index: 3;
+}
+
+.rating label:nth-child(4) {
+  z-index: 2;
+}
+
+.rating label:nth-child(5) {
+  z-index: 1;
+}
+
+.rating label input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.rating label .icon {
+  float: left;
+  color: transparent;
+}
+
+.rating label:last-child .icon {
+  color: #000;
+}
+
+.rating:not(:hover) label input:checked ~ .icon,
+.rating:hover label:hover input ~ .icon {
+  color: #09f;
+}
+
+.rating label input:focus:not(:checked) ~ .icon:last-child {
+  color: #000;
+  text-shadow: 0 0 5px #09f;
 }

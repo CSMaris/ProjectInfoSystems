@@ -18,23 +18,34 @@
 <div class="container">
 <div class="row">
 <div class="col-md">
-
-
+<table border="5">
     {% for image in immagini %}
-
-
-
-        <div class="card" style="width: 35rem;">
+        {% if loop.index is divisibleby 2 %}
+        <td>
+     <div class="card" style="width: 22rem;">
   <img class="card-img-top" src="{{ immagini[image] }}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">{{ image }}</h5>
     <a href="#" class="btn btn-primary">Benchmark prices</a>
   </div>
 </div>
-
-
+        </td>
+            </tr>
+        {% else %}
+            <tr>
+<td>
+     <div class="card" style="width: 22rem;">
+  <img class="card-img-top" src="{{ immagini[image] }}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{ image }}</h5>
+    <a href="#" class="btn btn-primary">Benchmark prices</a>
+  </div>
+</div>
+</td>
+{% endif %}
     {% endfor %}
 
+    </table>
 </div>
 <div class="col-md">
 <div class="content-section">
@@ -47,6 +58,17 @@
           </div>
 
 </div>
+    <br>
+    <form action="" method="post">
+    <h3>Filters</h3>
+     {{ filterForm.csrf_token() }}
+     {{ wtf.form_field(filterForm.quality, class='form-control') }}
+        <br>
+        {{ wtf.form_field(filterForm.brand, class='form-control') }}
+         <br>
+    <input type=submit value ='Apply the filter'  class='btn btn-primary'>
+
+    </form>
 </div>
 </div>
 </div>

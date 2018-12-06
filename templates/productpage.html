@@ -37,6 +37,7 @@
 
 
 
+
 </div>
 <div class="col-md">
 <div class="content-section">
@@ -49,14 +50,11 @@
           </div>
 
 </div>
-
-
-
-    <form class="rating" method="post" action="">
-          <input type="hidden" name="which-form" value="formC">
+ <form  method="post" action="">
+     <input type="hidden" name="which-form" value="formC">
      {{ formC.csrf_token() }}
      {{ wtf.form_field(formC.comment, class='form-control') }}
-        <h7>Please leave a rate</h7>
+      <h4 style="color:blue;">Please leave also a rate</h4>
         <br>
   <label>
     <input type="radio" name="stars" value="1" />
@@ -92,11 +90,9 @@
     <span class="icon">★</span>
     <span class="icon">★</span>
   </label>
-        <br>
-        <input type=submit value ='Leave your comment'  class='btn btn-primary'>
+     <br>
+    <input type=submit value ='Leave your comment'  class='btn btn-primary'>
 </form>
-
-
 
 </div>
 </div>
@@ -107,8 +103,6 @@
 if ( window.history.replaceState ) {
   window.history.replaceState( null, null, window.location.href );
 }
-
-
 </script>
 </footer>
 
