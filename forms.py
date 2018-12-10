@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask_wtf import FlaskForm
+from flask_wtf import *
 from wtforms import *
 from wtforms.validators import *
 from wtforms.fields.html5 import *
@@ -60,6 +60,7 @@ class NewProductForm(FlaskForm):
     brand=SelectField('Choose the brand of the product',choices=brands,validators=[InputRequired()])
     category= SelectField('Choose the category of the product',choices=categories, validators=[InputRequired()])
     price = StringField('Price', validators=[InputRequired()])
+    image = FileField('Insert an image of the product', validators=[InputRequired()])
 
     def validate_price(form, field):
         if not re.search('^[0-9]+,[0-9]{0,2}$', form.field.data):
