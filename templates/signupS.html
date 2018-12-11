@@ -18,13 +18,23 @@
 <div class="container">
 <div class="row">
 <div class="col-md">
+    <h4>{{ message }}</h4>
 
- <form method="post" action={{ url_for('homec') }}>
+ <form method="post" action=''}>
   {{ form2.csrf_token() }}
    {{ wtf.form_field(form2.email, class='form-control', placeholder='yourmail@example.com') }}
     <p></p>
-     {{ wtf.form_field(form2.password, class='form-control', placeholder='write here your password') }}
+     {{ wtf.form_field(form2.name, class='form-control') }}
     <p></p>
+     {{ wtf.form_field(form2.address, class='form-control') }}
+    <p></p>
+      {{ wtf.form_field(form2.city, class='form-control') }}
+    <p></p>
+      {{ wtf.form_field(form2.tel, class='form-control') }}
+    <p></p>
+      {{ wtf.form_field(form2.password, class='form-control', placeholder = 'Write here your password') }}
+    <p></p>
+
    <input type=submit value ='Sign up'  class='btn btn-warning btn-block'>
 
 </form>
@@ -35,4 +45,3 @@
 </div>
 
 {% endblock %}
-

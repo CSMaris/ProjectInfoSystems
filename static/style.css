@@ -1,8 +1,7 @@
 body {
-  background: #fafafa;
   color: #333333;
   margin-top: 5rem;
-  ackground-image: url("https://d1b7flq4e9knh1.cloudfront.net/news/files/2015/07/150715Delmore.jpg");
+  background-color: darkgoldenrod;
 }
 
 h1, h2, h3, h4, h5, h6 {

@@ -11,9 +11,19 @@ class loginForm(FlaskForm):
     password = PasswordField('Password',validators= [InputRequired(), Length(min=8, max=20)])
 
 
-class signupForm(FlaskForm):
+class signupFormC(FlaskForm):
     email = StringField('Email', validators=[InputRequired(), Email()])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=20)])
+
+class signupFormS(FlaskForm):
+    email = StringField('Email', validators=[InputRequired(), Email()])
+    name = StringField('Name', validators=[InputRequired()])
+    address = StringField('Address', validators=[InputRequired()])
+    city = StringField('City', validators=[InputRequired()])
+    tel = TelField('Tel', validators=[TelField])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=20)])
+
+
 
 class searchCategoryForm(FlaskForm):
     Choices = []
@@ -53,17 +63,27 @@ class FilterForm(FlaskForm):
     brand=SelectField('Filter by brand',choices=brands)
 
 class NewProductForm(FlaskForm):
-    brands = [ ('1', 'brand1'), ('2', 'brand2')]
-    categories = [('category1', 'cat1'), ('category2', 'cat2'), ('category3', 'cat3')]
+
 
     name=StringField('Name', validators=[InputRequired()])
-    brand=SelectField('Choose the brand of the product',choices=brands,validators=[InputRequired()])
-    category= SelectField('Choose the category of the product',choices=categories, validators=[InputRequired()])
+    brand=SelectField('Choose the brand of the product',choices=[],validators=[InputRequired()])
+    category= SelectField('Choose the category of the product',choices=[], validators=[InputRequired()])
     price = StringField('Price', validators=[InputRequired()])
-    image = FileField('Insert an image of the product', validators=[InputRequired()])
+    image = FileField('Insert an image of the product')
 
-    def validate_price(form, field):
-        if not re.search('^[0-9]+,[0-9]{0,2}$', form.field.data):
+    def validate_price(form, price):
+        if not re.search('^[0-9]+,[0-9]{0,2}$', form.price.data):
             raise ValidationError('Invalid input syntax')
-        form.euros = int(form.data.split(',')[0])
-        form.cents = int(form.data.split(',')[1])
+        form.euros = int(form.price.data.split(',')[0])
+        form.cents = int(form.price.data.split(',')[1])
+
+    def myValues(self,cats, bs):
+        C=[]
+        B=[]
+        for x in cats:
+           C.append(x)
+        self.category.choices=C
+
+        for y in bs:
+            B.append(y)
+        self.brand.choices=B
