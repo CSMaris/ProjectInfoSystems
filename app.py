@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DB.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///NEWDB.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -29,7 +29,7 @@ class Products(db.Model):
     brand=db.Column(db.String(30),nullable=True)
     category=db.Column(db.String(30),nullable=True)
     quality=db.Column(db.Integer, nullable=True)
-    image=db.Column(db.VARBINARY)
+    image=db.Column(db.String)
     supermarkets= db.relationship("Sells", back_populates="product")
 
     def __repr__(self):
@@ -93,12 +93,12 @@ def newProduct():
     form.myValues(cats,bs)
     if form.validate_on_submit():
         filename = secure_filename(form.image.data.filename)
-        #form.image.data.save('static/' + filename)
+        form.image.data.save('static/' + filename)
         newP=Products(name=form.name.data,
                       brand=form.brand.data,
                       category=form.category.data,
                       quality=0,
-                      image=filename)
+                      image=url_for('static',filename=filename))
         db.session.add(newP)
         db.session.commit()
 
@@ -203,19 +203,22 @@ def signups():
 
 @app.route('/products',methods=['POST','GET'] )
 def products():
- path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
- list = os.listdir(path)
+ #path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
+ #list = os.listdir(path)
  images={}
  filterForm=FilterForm()
+ list=Products.query.all()
+ for product in list:
+     images[product.name]=product.image
 
 
- for immagine in list:
-     nome=immagine.replace('.jpg', '')
-     images[nome]=(url_for('static', filename=immagine))
+ #for immagine in list:
+    # nome=immagine.replace('.jpg', '')
+     #images[nome]=(url_for('static', filename=immagine))
 
- del(images['style.css'])
+ #del(images['style.css'])
 
- return render_template('productspage.html', immagini=images, filterForm=filterForm)
+ return render_template('productspage.html', products=images, filterForm=filterForm)
 
 
 if __name__ == '__main__':

@@ -19,13 +19,13 @@
 <div class="row">
 <div class="col-md">
 <table border="5">
-    {% for image in immagini %}
+    {% for product in products %}
         {% if loop.index is divisibleby 2 %}
         <td>
      <div class="card" style="width: 22rem;">
-  <img class="card-img-top" src="{{ immagini[image] }}" alt="Card image cap">
+  <img class="card-img-top" src="{{ products[product] }}" alt="Card image cap">
   <div class="card-body">
-    <h5 class="card-title">{{ image }}</h5>
+    <h5 class="card-title">{{ product }}</h5>
     <a href="#" class="btn btn-primary">Benchmark prices</a>
   </div>
 </div>
@@ -35,9 +35,9 @@
             <tr>
 <td>
      <div class="card" style="width: 22rem;">
-  <img class="card-img-top" src="{{ immagini[image] }}" alt="Card image cap">
+  <img class="card-img-top" src="{{ products[product] }}" alt="Card image cap">
   <div class="card-body">
-    <h5 class="card-title">{{ image }}</h5>
+    <h5 class="card-title">{{ product }}</h5>
     <a href="#" class="btn btn-primary">Benchmark prices</a>
   </div>
 </div>
