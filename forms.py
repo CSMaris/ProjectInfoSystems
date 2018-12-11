@@ -72,10 +72,10 @@ class NewProductForm(FlaskForm):
     image = FileField('Insert an image of the product')
 
     def validate_price(form, price):
-        if not re.search('^[0-9]+,[0-9]{0,2}$', form.price.data):
+        if not re.search('^[0-9]+\.[0-9]{0,2}$', form.price.data):
             raise ValidationError('Invalid input syntax')
-        form.euros = int(form.price.data.split(',')[0])
-        form.cents = int(form.price.data.split(',')[1])
+        form.euros = int(form.price.data.split('.')[0])
+        form.cents = int(form.price.data.split('.')[1])
 
     def myValues(self,cats, bs):
         C=[]

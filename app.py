@@ -11,14 +11,13 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///NEWDB.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///NDB2.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
 
 class Users(db.Model):
-    id=db.Column(db.Integer, primary_key=True)
-    email=db.Column(db.String, nullable=True,unique=True)
+    email=db.Column(db.String, primary_key=True)
     password=db.Column(db.String, nullable=True)
 
 
@@ -37,8 +36,7 @@ class Products(db.Model):
 
 class Supermarkets(db.Model):
     __tablename__ = "Supermarkets"
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String,nullable=True,unique=True )
+    email = db.Column(db.String,primary_key= True )
     name=db.Column(db.String(20),nullable=True)
     address= db.Column(db.String(40),nullable=True)
     city= db.Column(db.String(20),nullable=True)
@@ -52,9 +50,10 @@ class Supermarkets(db.Model):
 
 class Sells(db.Model):
     __tablename__="Sells"
-    left_id=db.Column(db.Integer,db.ForeignKey("Products.id"), primary_key=True)
-    right_id=db.Column(db.Integer,db.ForeignKey("Supermarkets.id"), primary_key=True)
-    price= db.Column(db.Float, primary_key=True)
+    id=db.Column(db.Integer, primary_key=True)
+    left_id=db.Column(db.Integer,db.ForeignKey("Products.id"))
+    right_id=db.Column(db.String,db.ForeignKey("Supermarkets.email"))
+    price= db.Column(db.Float)
     product = db.relationship("Products", back_populates="supermarkets")
     supermarket = db.relationship("Supermarkets", back_populates="products")
 
@@ -99,7 +98,11 @@ def newProduct():
                       category=form.category.data,
                       quality=0,
                       image=url_for('static',filename=filename))
+        #STILL TO CHECK IF PRODUCT ALREADY IN DB BEFORE ADDING
         db.session.add(newP)
+        s=Sells(price=form.price.data)
+        s.supermarket=Supermarkets.query.get(session['email'].upper())
+        newP.supermarkets.append(s)
         db.session.commit()
 
 
@@ -146,8 +149,12 @@ def log():
         user=Users.query.filter_by(email=form1.email.data.upper()).first()
         supermarket=Supermarkets.query.filter_by(email=form1.email.data.upper()).first()
         if user and bcrypt.check_password_hash(user.password,form1.password.data):
+           session['email'] = form1.email.data
+           session['password'] = form1.password.data
            return redirect(url_for('homec') )
         elif supermarket and bcrypt.check_password_hash(supermarket.password,form1.password.data):
+            session['email'] = form1.email.data
+            session['password'] = form1.password.data
             return redirect(url_for('homes') )
         else:
            message='INCORRECT CREDENTIALS'
@@ -163,8 +170,8 @@ def signupc():
         if Users.query.filter_by(email=form2.email.data.upper()).first() or Supermarkets.query.filter_by(email=form2.email.data.upper()).first():
             message="Already existing email"
         else:
-            session['email2'] = form2.email.data
-            session['password2'] = form2.password.data
+            session['email'] = form2.email.data
+            session['password'] = form2.password.data
             password = bcrypt.generate_password_hash(form2.password.data)
             reg = Users(  email=form2.email.data.upper(),
                           password=password )
@@ -183,8 +190,8 @@ def signups():
       if Supermarkets.query.filter_by(email=form2.email.data.upper()).first() or Supermarkets.query.filter_by(tel=form2.tel.data).first() or Users.query.filter_by(email=form2.email.data.upper()).first() :
           message = "Already existing email or telephone number"
       else:
-        session['email2'] = form2.email.data
-        session['password2'] = form2.password.data
+        session['email'] = form2.email.data
+        session['password'] = form2.password.data
 
         password = bcrypt.generate_password_hash(form2.password.data)
         reg = Supermarkets(email=form2.email.data.upper(),
