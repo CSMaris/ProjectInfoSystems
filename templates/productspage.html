@@ -22,29 +22,36 @@
     {% for product in products %}
         {% if loop.index is divisibleby 2 %}
         <td>
+         <form method="post" action=""  enctype="multipart/form-data">
      <div class="card" style="width: 22rem;">
          <div class="card-header text-white bg-warning mb-3">{{ product.name }}</div>
   <img class="card-img-top" src="{{ product.image }}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">{{ product.brand }}</h5>
       <h6 class="card-subtitle mb-2 text-muted">Rating: {{ product.quality }}</h6>
-    <a href="#" class="btn btn-primary">Benchmark prices</a>
+      <input type= "hidden" name="hidden" value={{ product.id }} >
+    <input type=submit value ='Benchmark prices'  class='btn btn-secondary'  >
   </div>
 </div>
+         </form>
         </td>
             </tr>
         {% else %}
             <tr>
 <td>
+<form method="post"  action=""  enctype="multipart/form-data">
      <div class="card" style="width: 22rem;">
          <div class="card-header text-white bg-warning mb-3">{{ product.name }}</div>
+
   <img class="card-img-top" src="{{ product.image }}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">{{ product.brand }}</h5>
       <h6 class="card-subtitle mb-2 text-muted">Rating: {{ product.quality }}</h6>
-    <a href="#" class="btn btn-primary">Benchmark prices</a>
+      <input type= "hidden" name="hidden" value={{ product.id }} >
+    <input type=submit value ='Benchmark prices'    class='btn btn-secondary'  >
   </div>
 </div>
+</form>
 </td>
 {% endif %}
     {% endfor %}
@@ -58,7 +65,7 @@
           <div class="list-group">
              <a href="#" class="list-group-item list-group-item-action">PROFILE</a>
              <a href="#" class="list-group-item list-group-item-action">LIST</a>
-             <a href="#" class="list-group-item list-group-item-action">LOGOUT</a>
+             <a href="#" class="list-group-item list-group-item-action">HOME</a>
           </div>
 
 </div>
@@ -76,5 +83,12 @@
 </div>
 </div>
 </div>
+    <footer>
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
+</footer>
 {% endblock %}
 

@@ -3,6 +3,7 @@ from flask_wtf import *
 from wtforms import *
 from wtforms.validators import *
 from wtforms.fields.html5 import *
+from wtforms.widgets import html5
 import re
 
 
@@ -43,7 +44,7 @@ class BuyForm(FlaskForm):
                 ('2', '2'),
                 ('3', '3')]
 
-    quantity=SelectField('How many?',choices=quantities,validators=[InputRequired()])
+    quantity=IntegerRangeField('How many?',widget=html5.NumberInput(), validators=[NumberRange(min=1)])
 
 
 class CommentForm(FlaskForm):
@@ -63,8 +64,6 @@ class FilterForm(FlaskForm):
     brand=SelectField('Filter by brand',choices=brands)
 
 class NewProductForm(FlaskForm):
-
-
     name=StringField('Name', validators=[InputRequired()])
     brand=SelectField('Choose the brand of the product',choices=[],validators=[InputRequired()])
     category= SelectField('Choose the category of the product',choices=[], validators=[InputRequired()])
@@ -87,3 +86,4 @@ class NewProductForm(FlaskForm):
         for y in bs:
             B.append(y)
         self.brand.choices=B
+

@@ -139,10 +139,20 @@ def product():
 
     formQ=BuyForm()
     formC=CommentForm()
+    p=session['selectedProduct']
+    sells=Sells.query.filter_by(left_id=p).all()
+    supermarketsSell=[]
+    for s in sells:
+        supermarketMail=s.right_id
+        supermarket=Supermarkets.query.get(supermarketMail)
+        supermarketsSell.append({'name':supermarket.name, 'address':supermarket.address, 'price':s.price})
+
+
+
 
     if formQ.is_submitted() | formC.is_submitted():
       if request.form['which-form'] == 'formQ':
-       if formQ.is_submitted():
+       if formQ.validate_on_submit():
          #update DB
          print("SUBMITTED Q")
          return render_template('productpage.html', markets=cats, formQ=formQ, formC=formC)
@@ -152,7 +162,7 @@ def product():
          print("SUBMITTED C")
          return render_template('productpage.html', markets=cats, formQ=formQ, formC=formC)
 
-    return render_template('productpage.html', markets=cats, formQ=formQ, formC=formC)
+    return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell)
 
 
 @app.route('/homec', methods=['POST','GET'])
@@ -169,6 +179,50 @@ def homec():
 def profile():
     form=ProfileForm()
     return render_template('profile.html', form=form)
+
+
+
+
+@app.route('/products',methods=['POST','GET'] )
+def products():
+ if request.method == 'POST':
+     session['selectedProduct']=request.values.get('hidden')
+     return redirect(url_for('product'))
+
+
+ category=session['category']
+ #path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
+ #list = os.listdir(path)
+
+
+ products=[]
+ filterForm=FilterForm()
+ list=Products.query.filter_by(category=category).all()
+ for product in list:
+     quality=0
+     if product.quality == 0:
+         quality= 'NO REVIEWS'
+     if product.quality == 1:
+         quality=u'★'
+     if product.quality == 2:
+         quality=u'★★'
+     if product.quality == 3:
+         quality=u'★★★'
+     if product.quality == 4:
+         quality=u'★★★★'
+     if product.quality == 5:
+         quality=u'★★★★★'
+
+     products.append({'name':product.name,'image':product.image,'brand':product.brand,'quality':quality, 'id':product.id})
+
+
+ #for immagine in list:
+    # nome=immagine.replace('.jpg', '')
+     #images[nome]=(url_for('static', filename=immagine))
+
+ #del(images['style.css'])
+
+ return render_template('productspage.html', products=products, filterForm=filterForm)
 
 @app.route('/loginPage', methods=['POST', 'GET'])
 def log():
@@ -238,44 +292,11 @@ def signups():
     return render_template('signupS.html', form2=form2, message=message)
 
 
-@app.route('/products',methods=['POST','GET'] )
-def products():
- category=session['category']
- #path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
- #list = os.listdir(path)
- #form = searchCategoryForm(request.form, csrf_enabled=False)
-# if form.validate_on_submit():
-    # print("CIAO")
-     #print(form.category.data)
-
- images=[]
- filterForm=FilterForm()
- list=Products.query.filter_by(category=category).all()
- for product in list:
-     quality=0
-     if product.quality == 0:
-         quality= 'NO REVIEWS'
-     if product.quality == 1:
-         quality=u'★'
-     if product.quality == 2:
-         quality=u'★★'
-     if product.quality == 3:
-         quality=u'★★★'
-     if product.quality == 4:
-         quality=u'★★★★'
-     if product.quality == 5:
-         quality=u'★★★★★'
-
-     images.append({'name':product.name,'image':product.image,'brand':product.brand,'quality':quality})
 
 
- #for immagine in list:
-    # nome=immagine.replace('.jpg', '')
-     #images[nome]=(url_for('static', filename=immagine))
 
- #del(images['style.css'])
 
- return render_template('productspage.html', products=images, filterForm=filterForm)
+
 
 
 if __name__ == '__main__':

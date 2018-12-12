@@ -22,14 +22,13 @@
 
     <h3>Supermarkets having the specified product</h3>
 
-<p></p><p></p>
-    {% for element in markets %}
-  {{ element.title }} {{ element.content }}
+<br><br>
+    {% for sm in sells %}
+  <h4>{{ sm.name}}</h4> <h4>Address: {{ sm.address }}</h4><h6>Price: {{ sm.price }} $</h6>
         <form  method="post" action="">
         <input type="hidden" name="which-form" value="formQ">
-     {{ formQ.csrf_token() }}
-     {{ wtf.form_field(formQ.quantity, class='form-control') }}
-    <input type=submit value ='Add to your list'  class='btn btn-secondary'>
+            <input type="number" name="quantity">
+        <input type=submit value ='Add to your list'  class='btn btn-secondary'>
 </form>
         <hr size="30">
   {% endfor %}
@@ -46,7 +45,7 @@
           <div class="list-group">
              <a href="#" class="list-group-item list-group-item-action">PROFILE</a>
              <a href="#" class="list-group-item list-group-item-action">LIST</a>
-             <a href="#" class="list-group-item list-group-item-action">LOGOUT</a>
+             <a href="#" class="list-group-item list-group-item-action">HOME</a>
           </div>
 
 </div>
