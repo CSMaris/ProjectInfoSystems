@@ -23,9 +23,11 @@
         {% if loop.index is divisibleby 2 %}
         <td>
      <div class="card" style="width: 22rem;">
-  <img class="card-img-top" src="{{ products[product] }}" alt="Card image cap">
+         <div class="card-header text-white bg-warning mb-3">{{ product.name }}</div>
+  <img class="card-img-top" src="{{ product.image }}" alt="Card image cap">
   <div class="card-body">
-    <h5 class="card-title">{{ product }}</h5>
+    <h5 class="card-title">{{ product.brand }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">Rating: {{ product.quality }}</h6>
     <a href="#" class="btn btn-primary">Benchmark prices</a>
   </div>
 </div>
@@ -35,9 +37,11 @@
             <tr>
 <td>
      <div class="card" style="width: 22rem;">
-  <img class="card-img-top" src="{{ products[product] }}" alt="Card image cap">
+         <div class="card-header text-white bg-warning mb-3">{{ product.name }}</div>
+  <img class="card-img-top" src="{{ product.image }}" alt="Card image cap">
   <div class="card-body">
-    <h5 class="card-title">{{ product }}</h5>
+    <h5 class="card-title">{{ product.brand }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">Rating: {{ product.quality }}</h6>
     <a href="#" class="btn btn-primary">Benchmark prices</a>
   </div>
 </div>

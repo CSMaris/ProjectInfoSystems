@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///NDB2.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///database.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -101,7 +101,7 @@ def newProduct():
                       category=form.category.data,
                       quality=0,
                       image=url_for('static',filename=filename))
-        #STILL TO CHECK IF PRODUCT ALREADY IN DB BEFORE ADDING
+
         products = Products.query.all()
         productS = Sells.query.filter_by(right_id=session['email'].upper()).all()
 
@@ -159,6 +159,10 @@ def product():
 def homec():
     formhomec=searchCategoryForm()
     formhomec.myChoices(cats)
+    if formhomec.validate_on_submit():
+        session['category']=formhomec.category.data
+        return redirect(url_for('products'))
+
     return render_template('homec.html', formhomec=formhomec)
 
 @app.route('/profile', methods=['POST','GET'])
@@ -236,13 +240,33 @@ def signups():
 
 @app.route('/products',methods=['POST','GET'] )
 def products():
+ category=session['category']
  #path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
  #list = os.listdir(path)
- images={}
+ #form = searchCategoryForm(request.form, csrf_enabled=False)
+# if form.validate_on_submit():
+    # print("CIAO")
+     #print(form.category.data)
+
+ images=[]
  filterForm=FilterForm()
- list=Products.query.all()
+ list=Products.query.filter_by(category=category).all()
  for product in list:
-     images[product.name]=product.image
+     quality=0
+     if product.quality == 0:
+         quality= 'NO REVIEWS'
+     if product.quality == 1:
+         quality=u'★'
+     if product.quality == 2:
+         quality=u'★★'
+     if product.quality == 3:
+         quality=u'★★★'
+     if product.quality == 4:
+         quality=u'★★★★'
+     if product.quality == 5:
+         quality=u'★★★★★'
+
+     images.append({'name':product.name,'image':product.image,'brand':product.brand,'quality':quality})
 
 
  #for immagine in list:
