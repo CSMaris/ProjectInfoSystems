@@ -86,10 +86,13 @@ def setup_db():
 @app.route('/homes',methods=['POST','GET'])
 def homes():
     return render_template('homes.html')
+
 @app.route('/newProduct',methods=['POST','GET'])
 def newProduct():
     form= NewProductForm()
     form.myValues(cats,bs)
+    message=''
+
     if form.validate_on_submit():
         filename = secure_filename(form.image.data.filename)
         form.image.data.save('static/' + filename)
@@ -99,14 +102,37 @@ def newProduct():
                       quality=0,
                       image=url_for('static',filename=filename))
         #STILL TO CHECK IF PRODUCT ALREADY IN DB BEFORE ADDING
-        db.session.add(newP)
-        s=Sells(price=form.price.data)
-        s.supermarket=Supermarkets.query.get(session['email'].upper())
-        newP.supermarkets.append(s)
+        products = Products.query.all()
+        productS = Sells.query.filter_by(right_id=session['email'].upper()).all()
+
+        flag=True
+        flag2=True
+        for product in products:
+            if product.name == newP.name:
+                flag=False
+                break
+
+        for product in productS:
+            if Products.query.get(product.left_id).name == newP.name:
+                flag2=False
+
+
+
+
+        if(flag):
+         db.session.add(newP)
+        if(flag2):
+         s=Sells(price=form.price.data)
+         s.supermarket=Supermarkets.query.get(session['email'].upper())
+         newP.supermarkets.append(s)
+         message = 'Product successfully added'
+        else:
+            message='You\'ve already uploaded this product'
         db.session.commit()
 
 
-    return render_template('newProduct.html',form=form)
+
+    return render_template('newProduct.html',form=form, message=message)
 
 @app.route('/product', methods=['POST','GET'])
 def product():
