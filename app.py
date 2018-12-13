@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///xxxxxx.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -96,39 +96,56 @@ def newProduct():
     if form.validate_on_submit():
         filename = secure_filename(form.image.data.filename)
         form.image.data.save('static/' + filename)
-        newP=Products(name=form.name.data,
+        flag = True
+        products = Products.query.all()
+        for product in products:
+            if product.name == form.name.data:
+                flag=False
+                break
+        if flag:
+         newP=Products(name=form.name.data,
                       brand=form.brand.data,
                       category=form.category.data,
                       quality=0,
                       image=url_for('static',filename=filename))
-
-        products = Products.query.all()
-        productS = Sells.query.filter_by(right_id=session['email'].upper()).all()
-
-        flag=True
-        flag2=True
-        for product in products:
-            if product.name == newP.name:
-                flag=False
-                break
-
-        for product in productS:
-            if Products.query.get(product.left_id).name == newP.name:
-                flag2=False
-
-
-
-
-        if(flag):
          db.session.add(newP)
-        if(flag2):
-         s=Sells(price=form.price.data)
-         s.supermarket=Supermarkets.query.get(session['email'].upper())
+         s = Sells(price=form.price.data)
+         s.supermarket = Supermarkets.query.get(session['email'].upper())
          newP.supermarkets.append(s)
          message = 'Product successfully added'
+
         else:
-            message='You\'ve already uploaded this product'
-        db.session.commit()
+
+
+         productS = Sells.query.filter_by(right_id=session['email'].upper()).all()
+         prodotti=Products.query.filter_by(name=form.name.data).all()
+         flag2=True
+         id=''
+         for product in prodotti:
+           if product.name == form.name.data:
+               id=product.id
+
+
+
+         for product in productS:
+            if Products.query.get(product.left_id).name == form.name.data:
+                flag2=False
+                break
+
+
+
+
+
+         if(flag2):
+             s = Sells(price=form.price.data)
+             s.supermarket = Supermarkets.query.get(session['email'].upper())
+             Products.query.get(id).supermarkets.append(s)
+             message = 'Product successfully added'
+         else:
+             message='You\'ve already uploaded this product'
+
+
+    db.session.commit()
 
 
 
