@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///dataaa.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///dbssss.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -23,7 +23,7 @@ class Users(db.Model):
     products=db.relationship("ConsumerProducts", back_populates="consumer")
 
 class ConsumerProducts(db.Model):
-    __tablename__="ConsumerProducts"
+    __tablename__= "ConsumerProducts"
     id=db.Column(db.Integer, primary_key=True)
     left_id=db.Column(db.Integer,db.ForeignKey("Products.id"))
     right_id=db.Column(db.String,db.ForeignKey("Users.email"))
@@ -31,6 +31,13 @@ class ConsumerProducts(db.Model):
     smail=db.Column(db.String(30))
     product = db.relationship("Products", back_populates="consumers")
     consumer = db.relationship("Users", back_populates="products")
+
+class Comments(db.Model):
+    __tablename__ = "Comments"
+    id=db.Column(db.Integer, primary_key=True)
+    text=db.Column(db.TEXT,nullable=True)
+    product = db.Column(db.Integer, db.ForeignKey('Products.id'), nullable=True)
+
 
 
 class Products(db.Model):
@@ -43,6 +50,8 @@ class Products(db.Model):
     image=db.Column(db.String)
     consumers=db.relationship("ConsumerProducts", back_populates="product")
     supermarkets= db.relationship("Sells", back_populates="product")
+    comments = db.relationship('Comments')
+
     def __repr__(self):
         return "<Product %r>" % self.name
 
@@ -242,6 +251,8 @@ def listS():
 
         if len(sl) == 0:
             p=Products.query.get(pid)
+            path = 'C:\Users\Stefan Maris\PycharmProjects\Project' +p.image
+            os.remove(path)
             db.session.delete(p)
             db.session.commit()
 
