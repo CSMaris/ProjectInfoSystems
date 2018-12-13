@@ -1,0 +1,69 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+    ProductsSale</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+{% endblock %}
+
+{% block content %}
+<header class="site-header">
+   <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+    <div class="container">
+        <h1>PRODUCTS ON SALE</h1>
+    </div>
+   </nav>
+</header>
+<div class="container">
+<div class="row">
+<div class="col-md">
+
+
+<div class="list-group">
+    {% for product in list %}
+  <a  class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ product.namep }}</h5>
+    </div>
+    <p class="mb-1">Brand: {{ product.brand }}</p>
+    <span class="badge badge-primary badge-pill">Price: {{ product.price }}$</span>
+  </a>
+        <form action="" method="post">
+        <input type=submit value ='Remove' name="Remove" class='btn btn-warning btn-block'>
+        <input type="hidden" name="product" value={{ product.idp }}>
+        </form>
+        <form action="" method="post">
+        {{ priceForm.csrf_token() }}
+        {{ wtf.form_field(priceForm.price, class='form-control') }}
+        <input type=submit value ='Change price' name="priceChanged" class='btn btn-warning btn-block'>
+        <input type="hidden" name="product" value={{ product.idp }}>
+        </form>
+        <hr size="40">
+       {% endfor %}
+
+</div>
+
+</div>
+<div class="col-md">
+<div class="content-section">
+    <h3>MENU</h3>
+
+          <div class="list-group">
+             <a href="#" class="list-group-item list-group-item-action">PROFILE</a>
+             <a href="#" class="list-group-item list-group-item-action">HOME</a>
+             <a href="#" class="list-group-item list-group-item-action">LOGOUT</a>
+          </div>
+
+</div>
+</div>
+</div>
+</div>
+    <footer>
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
+</footer>
+{% endblock %}

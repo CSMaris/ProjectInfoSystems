@@ -11,14 +11,26 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///xxxxxx.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///dataaa.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
 
 class Users(db.Model):
+    __tablename__ = "Users"
     email=db.Column(db.String, primary_key=True)
     password=db.Column(db.String, nullable=True)
+    products=db.relationship("ConsumerProducts", back_populates="consumer")
+
+class ConsumerProducts(db.Model):
+    __tablename__="ConsumerProducts"
+    id=db.Column(db.Integer, primary_key=True)
+    left_id=db.Column(db.Integer,db.ForeignKey("Products.id"))
+    right_id=db.Column(db.String,db.ForeignKey("Users.email"))
+    number= db.Column(db.Integer)
+    smail=db.Column(db.String(30))
+    product = db.relationship("Products", back_populates="consumers")
+    consumer = db.relationship("Users", back_populates="products")
 
 
 class Products(db.Model):
@@ -29,8 +41,8 @@ class Products(db.Model):
     category=db.Column(db.String(30),nullable=True)
     quality=db.Column(db.Integer, nullable=True)
     image=db.Column(db.String)
+    consumers=db.relationship("ConsumerProducts", back_populates="product")
     supermarkets= db.relationship("Sells", back_populates="product")
-
     def __repr__(self):
         return "<Product %r>" % self.name
 
@@ -162,7 +174,7 @@ def product():
     for s in sells:
         supermarketMail=s.right_id
         supermarket=Supermarkets.query.get(supermarketMail)
-        supermarketsSell.append({'name':supermarket.name, 'address':supermarket.address, 'price':s.price})
+        supermarketsSell.append({'name':supermarket.name, 'address':supermarket.address, 'price':s.price, 'productid':p, 'smail':supermarket.email})
 
 
 
@@ -171,8 +183,12 @@ def product():
       if request.form['which-form'] == 'formQ':
        if formQ.validate_on_submit():
          #update DB
-         print("SUBMITTED Q")
-         return render_template('productpage.html', markets=cats, formQ=formQ, formC=formC)
+         cp = ConsumerProducts(number=formQ.quantity.data,smail=request.values.get('smail'))
+         cp.consumer = Users.query.get(session['email'].upper())
+         p=Products.query.get(request.values.get('productid'))
+         p.consumers.append(cp)
+         db.session.commit()
+         return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, message="Added to your list")
 
       if request.form['which-form'] == 'formC':
          #update DB
@@ -180,6 +196,65 @@ def product():
          return render_template('productpage.html', markets=cats, formQ=formQ, formC=formC)
 
     return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell)
+
+@app.route('/listC',methods=['POST', 'GET'])
+def listC():
+   list=[]
+   cps=ConsumerProducts.query.filter_by(right_id=session['email'].upper()).all()
+   totPrice=0
+   for cp in cps:
+       product=Products.query.get(cp.left_id)
+       supermarket = Supermarkets.query.get(cp.smail)
+       sell = Sells.query.filter_by(right_id=cp.smail).filter_by(left_id=cp.left_id).first()
+       namep=product.name
+       price=sell.price
+       pricex=price*cp.number
+       totPrice=totPrice+pricex
+       names=supermarket.name
+       address=supermarket.address
+       number=cp.number
+
+
+       list.append({'namep':namep, 'price':price, 'names':names, 'address':address, 'number':number})
+
+   return render_template('listC.html', list=list, totPrice=totPrice)
+
+@app.route('/listS', methods=['POST', 'GET'])
+def listS():
+    list=[]
+    priceForm=changePrice()
+    sells=Sells.query.filter_by(right_id=session['email'].upper()).all()
+    for s in sells:
+        product=Products.query.get(s.left_id)
+        idp=product.id
+        namep=product.name
+        brand=product.brand
+        price=s.price
+        list.append({'namep':namep,'brand':brand, 'price':price, 'idp':idp })
+
+    if 'Remove' in request.form:
+        pid=request.values.get('product')
+        s=Sells.query.filter_by(left_id=pid).filter_by(right_id=session['email'].upper()).first()
+        db.session.delete(s)
+        db.session.commit()
+        # check if that was the last supermarket selling the product
+        sl=Sells.query.filter_by(left_id=pid).all()
+
+        if len(sl) == 0:
+            p=Products.query.get(pid)
+            db.session.delete(p)
+            db.session.commit()
+
+        return redirect(url_for('listS'))
+    if priceForm.validate_on_submit():
+        pid = request.values.get('product')
+        s = Sells.query.filter_by(left_id=pid).filter_by(right_id=session['email'].upper()).first()
+        s.price=priceForm.price.data
+        db.session.commit()
+        return redirect(url_for('listS'))
+
+
+    return render_template('listS.html', list=list, priceForm=priceForm)
 
 
 @app.route('/homec', methods=['POST','GET'])
