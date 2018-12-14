@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///NewDataDatabase.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DBProva.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -36,7 +36,7 @@ class Comments(db.Model):
     __tablename__ = "Comments"
     id=db.Column(db.Integer, primary_key=True)
     text=db.Column(db.TEXT,nullable=True)
-    product = db.Column(db.Integer, db.ForeignKey('Products.id'), nullable=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('Products.id'))
 
 
 
@@ -50,7 +50,7 @@ class Products(db.Model):
     image=db.Column(db.String)
     consumers=db.relationship("ConsumerProducts", back_populates="product")
     supermarkets= db.relationship("Sells", back_populates="product")
-    comments = db.relationship('Comments')
+    comments = db.relationship('Comments', backref='product')
 
     def __repr__(self):
         return "<Product %r>" % self.name
@@ -203,10 +203,11 @@ def product():
           if formC.validate_on_submit():
               text=formC.comment.data
               stars=request.values.get('stars')
-              #c=Comments(text=text, product=p) not working
               pid=request.values.get('productid')
               p=Products.query.get(pid)
               p.quality=stars
+              c=Comments(text=text, product=p)
+              #print(p.comments)
               db.session.commit()
 
               print("SUBMITTED C")
