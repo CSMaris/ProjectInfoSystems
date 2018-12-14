@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
 from flask import Flask, request, url_for, render_template, session, redirect
 from forms import *
 import os
@@ -8,10 +9,11 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DBProva.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DBProva4.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -46,7 +48,8 @@ class Products(db.Model):
     name=db.Column(db.String(20),nullable=True)
     brand=db.Column(db.String(30),nullable=True)
     category=db.Column(db.String(30),nullable=True)
-    quality=db.Column(db.Integer, nullable=True)
+    quality=db.Column(db.Float, nullable=True)
+    numberRatings=db.Column(db.Integer)
     image=db.Column(db.String)
     consumers=db.relationship("ConsumerProducts", back_populates="product")
     supermarkets= db.relationship("Sells", back_populates="product")
@@ -128,6 +131,7 @@ def newProduct():
                       brand=form.brand.data,
                       category=form.category.data,
                       quality=0,
+                       numberRatings=0,
                       image=url_for('static',filename=filename))
          db.session.add(newP)
          s = Sells(price=form.price.data)
@@ -202,16 +206,24 @@ def product():
       if request.form['which-form'] == 'formC':
           if formC.validate_on_submit():
               text=formC.comment.data
-              stars=request.values.get('stars')
-              pid=request.values.get('productid')
+
+              rating=int(request.values.get('stars'))
+
+              pid=session['selectedProduct']
               p=Products.query.get(pid)
-              p.quality=stars
+              nold=p.numberRatings
+              n=nold+1
+              totalS=nold*p.quality
+              p.numberRatings=n
+              totalS=totalS+rating
+              newQuality=totalS/n
+              p.quality= newQuality
               c=Comments(text=text, product=p)
-              #print(p.comments)
+
               db.session.commit()
 
               print("SUBMITTED C")
-              return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=p)
+              return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=pid)
 
     return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=p)
 
@@ -312,17 +324,17 @@ def products():
  list=Products.query.filter_by(category=category).all()
  for product in list:
      quality=0
-     if product.quality == 0:
+     if product.quality == 0.0:
          quality= 'NO REVIEWS'
-     if product.quality == 1:
+     elif product.quality <1.5:
          quality=u'★'
-     if product.quality == 2:
+     elif product.quality >= 1.5 and product.quality<2.5:
          quality=u'★★'
-     if product.quality == 3:
+     elif product.quality >= 2.5 and product.quality<3.5:
          quality=u'★★★'
-     if product.quality == 4:
+     elif product.quality >= 3.5 and product.quality<4.5:
          quality=u'★★★★'
-     if product.quality == 5:
+     elif product.quality >= 4.5:
          quality=u'★★★★★'
 
      products.append({'name':product.name,'image':product.image,'brand':product.brand,'quality':quality, 'id':product.id})
