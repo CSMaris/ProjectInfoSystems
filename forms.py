@@ -56,7 +56,7 @@ class BuyForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
-    comment=TextAreaField('Write here your comment...')
+    comment=TextAreaField('Write here your comment...', validators=[InputRequired()])
 
 class ProfileForm(FlaskForm):
     name = StringField('Name', validators=[InputRequired()])

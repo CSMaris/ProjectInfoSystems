@@ -55,6 +55,7 @@
 </div>
  <form  method="post" action="">
      <input type="hidden" name="which-form" value="formC">
+     <input type="hidden" name="productid" value={{ pid }}>
      {{ formC.csrf_token() }}
      {{ wtf.form_field(formC.comment, class='form-control') }}
       <h4 style="color:blue;">Please leave also a rate</h4>

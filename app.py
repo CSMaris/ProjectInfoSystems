@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///dbssss.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///NewDataDatabase.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -197,14 +197,22 @@ def product():
          p=Products.query.get(request.values.get('productid'))
          p.consumers.append(cp)
          db.session.commit()
-         return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, message="Added to your list")
+         return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, message="Added to your list", pid=p)
 
       if request.form['which-form'] == 'formC':
-         #update DB
-         print("SUBMITTED C")
-         return render_template('productpage.html', markets=cats, formQ=formQ, formC=formC)
+          if formC.validate_on_submit():
+              text=formC.comment.data
+              stars=request.values.get('stars')
+              #c=Comments(text=text, product=p) not working
+              pid=request.values.get('productid')
+              p=Products.query.get(pid)
+              p.quality=stars
+              db.session.commit()
 
-    return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell)
+              print("SUBMITTED C")
+              return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=p)
+
+    return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=p)
 
 @app.route('/listC',methods=['POST', 'GET'])
 def listC():
