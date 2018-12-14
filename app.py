@@ -182,6 +182,13 @@ def product():
     formQ=BuyForm()
     formC=CommentForm()
     p=session['selectedProduct']
+    product=Products.query.get(p)
+
+    comments=product.comments
+    listComments=[]
+    for c in comments:
+        listComments.append(c.text)
+
     sells=Sells.query.filter_by(left_id=p).all()
     supermarketsSell=[]
     for s in sells:
@@ -201,7 +208,7 @@ def product():
          p=Products.query.get(request.values.get('productid'))
          p.consumers.append(cp)
          db.session.commit()
-         return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, message="Added to your list", pid=p)
+         return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, message="Added to your list", pid=p, comments=listComments)
 
       if request.form['which-form'] == 'formC':
           if formC.validate_on_submit():
@@ -219,13 +226,10 @@ def product():
               newQuality=totalS/n
               p.quality= newQuality
               c=Comments(text=text, product=p)
-
               db.session.commit()
+              return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=pid, comments=listComments)
 
-              print("SUBMITTED C")
-              return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=pid)
-
-    return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=p)
+    return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=p, comments=listComments)
 
 @app.route('/listC',methods=['POST', 'GET'])
 def listC():
@@ -309,19 +313,35 @@ def profile():
 
 @app.route('/products',methods=['POST','GET'] )
 def products():
+    # path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
+    # list = os.listdir(path)
+ flag=True
+ list=[]
+ category = session['category']
+ filterForm = FilterForm()
+
  if request.method == 'POST':
+    if 'formProduct' in request.form:
      session['selectedProduct']=request.values.get('hidden')
      return redirect(url_for('product'))
+    elif filterForm.validate_on_submit():
+        flag=False
+        qual = filterForm.quality.data
+        brand = filterForm.brand.data
+        #if qual > 0 and brand != "NOFILTER":
+         #  list = Products.query.filter_by(category=category).filter(quality = qual).filter_by(brand=brand).all()
+        #elif qual > 0:
+         #   list = Products.query.filter_by(category=category).filter_by(quality = qual).all() ???? BOHHH
+        if brand != "NOFILTER":
+           list = Products.query.filter_by(category=category).filter_by(brand=brand).all()
+        else:
+            list = Products.query.filter_by(category=category).all()
 
 
- category=session['category']
- #path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
- #list = os.listdir(path)
-
+ if(flag):
+     list=Products.query.filter_by(category=category).all()
 
  products=[]
- filterForm=FilterForm()
- list=Products.query.filter_by(category=category).all()
  for product in list:
      quality=0
      if product.quality == 0.0:

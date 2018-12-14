@@ -30,7 +30,7 @@
     <h5 class="card-title">{{ product.brand }}</h5>
       <h6 class="card-subtitle mb-2 text-muted">Rating: {{ product.quality }}</h6>
       <input type= "hidden" name="hidden" value={{ product.id }} >
-    <input type=submit value ='Benchmark prices'  class='btn btn-secondary'  >
+    <input type=submit value ='Benchmark prices' name="formProduct" class='btn btn-secondary'  >
   </div>
 </div>
          </form>
@@ -47,7 +47,7 @@
     <h5 class="card-title">{{ product.brand }}</h5>
       <h6 class="card-subtitle mb-2 text-muted">Rating: {{ product.quality }}</h6>
       <input type= "hidden" name="hidden" value={{ product.id }} >
-    <input type=submit value ='Benchmark prices'    class='btn btn-secondary'  >
+    <input type=submit value ='Benchmark prices'  name="formProduct"   class='btn btn-secondary'  >
   </div>
 </div>
 </form>
@@ -75,7 +75,7 @@
         <br>
         {{ wtf.form_field(filterForm.brand, class='form-control') }}
          <br>
-    <input type=submit value ='Apply the filter'  class='btn btn-primary'>
+    <input type=submit value ='Apply the filter' name="formFilter"  class='btn btn-primary'>
 
     </form>
 </div>

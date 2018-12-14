@@ -1,6 +1,5 @@
 body {
-  background: #fafafa;
-  color: #333333;
+  background-color: darkgoldenrod;
   margin-top: 5rem;
 }
 
@@ -15,6 +14,7 @@ h7{
 .bg-steel {
   background-color: burlywood;
 }
+
 
 
 .site-header .navbar-nav .nav-link {

@@ -68,7 +68,7 @@ class ProfileForm(FlaskForm):
 class FilterForm(FlaskForm):
     qualities=[('0','NOFILTER'),('1',u'★'),('2',u'★★'),('3',u'★★★'),('4',u'★★★★'),('5',u'★★★★★')]
     quality= SelectField('Filter by quality',choices=qualities)
-    brands=[('0','NOFILTER'),('1','brand1'),('2','brand2')]
+    brands=[('NOFILTER','NOFILTER'),('brand1','brand1'),('brand2','brand2')]
     brand=SelectField('Filter by brand',choices=brands)
 
 class NewProductForm(FlaskForm):
