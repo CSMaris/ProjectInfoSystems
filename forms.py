@@ -63,7 +63,6 @@ class ProfileForm(FlaskForm):
     address = StringField('Address',validators=[InputRequired()])
     city = StringField('City',validators=[InputRequired()])
     tel=TelField('Tel',validators=[TelField])
-    email=StringField('Email', validators=[InputRequired(), Email()])
 
 class FilterForm(FlaskForm):
     qualities=[('0','NOFILTER'),('1',u'★'),('2',u'★★'),('3',u'★★★'),('4',u'★★★★'),('5',u'★★★★★')]

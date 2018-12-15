@@ -30,8 +30,11 @@
     <small>address: {{ product.address }}</small>
       <span class="badge badge-primary badge-pill">Price: {{ product.price }}$</span>
      <span class="badge badge-primary badge-pill">Units: {{ product.number }}</span>
-
   </a>
+        <form action="" method="post">
+        <input type=submit value ='Remove' name="Remove" class='btn btn-warning btn-block'>
+        <input type="hidden" name="product" value={{ product.idp }}>
+        </form>
        {% endfor %}
 <h7>Total: {{ totPrice }}$</h7>
 </div>

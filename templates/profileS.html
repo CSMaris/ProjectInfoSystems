@@ -17,16 +17,32 @@
 <div class="container">
 <div class="row">
 <div class="col-md">
+    <h3>{{ message }}</h3>
 
- <ul class="list-group">
-  <li class="list-group-item">Name: {{ data.name }}</li>
-     <li class="list-group-item">Address: {{ data.address }}</li>
-     <li class="list-group-item">City: {{ data.city }}</li>
-     <li class="list-group-item">Tel: {{ data.tel }}</li>
-     <li class="list-group-item">E-mail: {{ data.email }}</li>
-</ul>
+ <form method="post" action="">
+  {{ form.csrf_token() }}
+   {{ wtf.form_field(form.name, class='form-control') }}
+    <p></p>
+     {{ wtf.form_field(form.address, class='form-control') }}
+    <p></p>
+     {{ wtf.form_field(form.city, class='form-control') }}
+     <p></p>
+     {{ wtf.form_field(form.tel, class='form-control') }}
+
+   <input type=submit value ='Save'  class='btn btn-warning btn-block'>
+
+</form>
+</div>
+
+
 </div>
 </div>
-</div>
+    <footer>
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
+</footer>
 
 {% endblock %}

@@ -13,7 +13,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DBProva4.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DBProva6.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -49,6 +49,7 @@ class Products(db.Model):
     brand=db.Column(db.String(30),nullable=True)
     category=db.Column(db.String(30),nullable=True)
     quality=db.Column(db.Float, nullable=True)
+    qualityInt=db.Column(db.Integer, nullable=True)
     numberRatings=db.Column(db.Integer)
     image=db.Column(db.String)
     consumers=db.relationship("ConsumerProducts", back_populates="product")
@@ -131,6 +132,7 @@ def newProduct():
                       brand=form.brand.data,
                       category=form.category.data,
                       quality=0,
+                       qualityInt=0,
                        numberRatings=0,
                       image=url_for('static',filename=filename))
          db.session.add(newP)
@@ -224,7 +226,9 @@ def product():
               p.numberRatings=n
               totalS=totalS+rating
               newQuality=totalS/n
+              newQualityInt=int(newQuality +0.5)
               p.quality= newQuality
+              p.qualityInt=newQualityInt
               c=Comments(text=text, product=p)
               db.session.commit()
               return render_template('productpage.html', formQ=formQ, formC=formC, sells=supermarketsSell, pid=pid, comments=listComments)
@@ -238,6 +242,7 @@ def listC():
    totPrice=0
    for cp in cps:
        product=Products.query.get(cp.left_id)
+       pid=product.id
        supermarket = Supermarkets.query.get(cp.smail)
        sell = Sells.query.filter_by(right_id=cp.smail).filter_by(left_id=cp.left_id).first()
        namep=product.name
@@ -248,8 +253,14 @@ def listC():
        address=supermarket.address
        number=cp.number
 
+       list.append({'namep':namep, 'price':price, 'names':names, 'address':address, 'number':number, 'idp':pid})
 
-       list.append({'namep':namep, 'price':price, 'names':names, 'address':address, 'number':number})
+   if 'Remove' in request.form:
+        pid=request.values.get('product')
+        cp=ConsumerProducts.query.filter_by(left_id=pid).filter_by(right_id=session['email'].upper()).first()
+        db.session.delete(cp)
+        db.session.commit()
+        return redirect(url_for('listC'))
 
    return render_template('listC.html', list=list, totPrice=totPrice)
 
@@ -305,16 +316,31 @@ def homec():
 
 @app.route('/profile', methods=['POST','GET'])
 def profile():
+    smail=request.values.get('supermarket')
+    s=Supermarkets.query.get(smail)
+    data={'name':s.name, 'address':s.address, 'city':s.city, 'tel':s.tel, 'email':smail}
+
+    return render_template('profile.html', data=data)
+
+@app.route('/profileS',  methods=['POST','GET'])
+def profileS():
     form=ProfileForm()
-    return render_template('profile.html', form=form)
+    if form.validate_on_submit():
+        smail=session['email']
+        supermarket=Supermarkets.query.get(smail.upper())
+        supermarket.name=form.name.data
+        supermarket.address = form.address.data
+        supermarket.city = form.city.data
+        supermarket.tel = form.tel.data
+        db.session.commit()
+        message="Profile updated"
+        return render_template('profileS.html', form=form, message=message)
 
-
+    return render_template('profileS.html', form=form)
 
 
 @app.route('/products',methods=['POST','GET'] )
 def products():
-    # path='C:\Users\Stefan Maris\PycharmProjects\Project\static'
-    # list = os.listdir(path)
  flag=True
  list=[]
  category = session['category']
@@ -326,15 +352,19 @@ def products():
      return redirect(url_for('product'))
     elif filterForm.validate_on_submit():
         flag=False
-        qual = filterForm.quality.data
+        qual = int(filterForm.quality.data)
         brand = filterForm.brand.data
-        #if qual > 0 and brand != "NOFILTER":
-         #  list = Products.query.filter_by(category=category).filter(quality = qual).filter_by(brand=brand).all()
-        #elif qual > 0:
-         #   list = Products.query.filter_by(category=category).filter_by(quality = qual).all() ???? BOHHH
-        if brand != "NOFILTER":
+        if qual > 0 and brand != "NOFILTER":
+           print("IF1")
+           list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).filter_by(brand=brand).all()
+        elif qual > 0:
+            print("IF2")
+            list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).all()
+        elif brand != "NOFILTER":
+           print("IF3")
            list = Products.query.filter_by(category=category).filter_by(brand=brand).all()
         else:
+            print("IF4")
             list = Products.query.filter_by(category=category).all()
 
 
@@ -344,27 +374,20 @@ def products():
  products=[]
  for product in list:
      quality=0
-     if product.quality == 0.0:
+     if product.qualityInt == 0:
          quality= 'NO REVIEWS'
-     elif product.quality <1.5:
+     elif product.qualityInt ==1:
          quality=u'★'
-     elif product.quality >= 1.5 and product.quality<2.5:
+     elif product.qualityInt ==2:
          quality=u'★★'
-     elif product.quality >= 2.5 and product.quality<3.5:
+     elif product.qualityInt ==3:
          quality=u'★★★'
-     elif product.quality >= 3.5 and product.quality<4.5:
+     elif product.qualityInt ==4:
          quality=u'★★★★'
-     elif product.quality >= 4.5:
+     elif product.qualityInt ==5:
          quality=u'★★★★★'
 
      products.append({'name':product.name,'image':product.image,'brand':product.brand,'quality':quality, 'id':product.id})
-
-
- #for immagine in list:
-    # nome=immagine.replace('.jpg', '')
-     #images[nome]=(url_for('static', filename=immagine))
-
- #del(images['style.css'])
 
  return render_template('productspage.html', products=products, filterForm=filterForm)
 
@@ -434,13 +457,6 @@ def signups():
         return redirect(url_for('homes'))
 
     return render_template('signupS.html', form2=form2, message=message)
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':

@@ -25,7 +25,12 @@
     <h7>{{ message }}</h7>
     <br>
     {% for sm in sells %}
-  <h4>{{ sm.name}}</h4> <h4>Address: {{ sm.address }}</h4><h6>Price: {{ sm.price }} $</h6>
+      <form action={{ url_for('profile') }}>
+  <input type="submit" class="btn btn-link btn-lg" value={{ sm.name }}>
+      <input type="hidden" name="supermarket" value={{ sm.smail }}>
+      </form>
+
+        <h4>Address: {{ sm.address }}</h4><h6>Price: {{ sm.price }} $</h6>
         <form  method="post" action="">
         <input type="hidden" name="which-form" value="formQ">
             <input type="hidden" name="productid" value={{ sm.productid}}>
