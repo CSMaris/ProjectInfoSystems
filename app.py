@@ -13,7 +13,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DBProva6.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///Database.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -83,7 +83,7 @@ class Sells(db.Model):
     supermarket = db.relationship("Supermarkets", back_populates="products")
 
 cats=[('category1','cat1'),( 'category2','cat2'),( 'category3','cat3')]
-bs=[('brand1','Barilla'),( 'brand2','Ferrero'),( 'brand3','Nestle')]
+bs=[('Barilla','Barilla'),( 'Ferrero','Ferrero'),( 'Nestle','Nestle')]
 
 
 @app.before_first_request
@@ -345,6 +345,7 @@ def products():
  list=[]
  category = session['category']
  filterForm = FilterForm()
+ filterForm.myBrands(bs)
 
  if request.method == 'POST':
     if 'formProduct' in request.form:

@@ -67,8 +67,16 @@ class ProfileForm(FlaskForm):
 class FilterForm(FlaskForm):
     qualities=[('0','NOFILTER'),('1',u'★'),('2',u'★★'),('3',u'★★★'),('4',u'★★★★'),('5',u'★★★★★')]
     quality= SelectField('Filter by quality',choices=qualities)
-    brands=[('NOFILTER','NOFILTER'),('brand1','brand1'),('brand2','brand2')]
-    brand=SelectField('Filter by brand',choices=brands)
+    brand=SelectField('Filter by brand',choices=[])
+
+    def myBrands(self,bs):
+        B = []
+
+        for y in bs:
+            B.append(y)
+        brands0 = [('NOFILTER', 'NOFILTER')]
+        brands=brands0+B
+        self.brand.choices = brands
 
 class NewProductForm(FlaskForm):
     name=StringField('Name', validators=[InputRequired()])

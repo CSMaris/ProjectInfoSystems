@@ -1,6 +1,10 @@
 body {
-  background-color: darkgoldenrod;
+  background-color: darkgoldenrod !important;
+  /*background-image: url("https://www.lequzhai.com/data/out/201/1161958.gif");*/
   margin-top: 5rem;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+  background-position:center;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -12,20 +16,18 @@ h7{
 }
 
 
-
-
 .bg-steel {
-  background-color: burlywood;
+  background-color: gold;
 }
 
 
 
 .site-header .navbar-nav .nav-link {
-  color: burlywood;
+  color: gold;
 }
 
 .site-header .navbar-nav .nav-link:hover {
-  color: burlywood;
+  color: gold;
 }
 
 .site-header .navbar-nav .nav-link.active {
@@ -33,7 +35,7 @@ h7{
 }
 
 .content-section {
-  background: burlywood;
+  background: gold;
   padding: 10px 20px;
   border: 1px solid #dddddd;
   border-radius: 3px;
@@ -41,7 +43,7 @@ h7{
 }
 
 .article-title {
-  color: burlywood;
+  color: gold;
 }
 
 a.article-title:hover {
@@ -151,4 +153,11 @@ a.article-title:hover {
 .rating label input:focus:not(:checked) ~ .icon:last-child {
   color: #000;
   text-shadow: 0 0 5px #09f;
+}
+
+.custom-imge-product {
+    width: 218px !important;
+    border-top-left-radius: calc(.25rem - 1px);
+    border-top-right-radius: calc(.25rem - 1px);
+    height: 144px!important;
 }
