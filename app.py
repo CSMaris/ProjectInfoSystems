@@ -97,17 +97,6 @@ def setup_db():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/homes',methods=['POST','GET'])
 def homes():
     return render_template('homes.html')
@@ -356,16 +345,12 @@ def products():
         qual = int(filterForm.quality.data)
         brand = filterForm.brand.data
         if qual > 0 and brand != "NOFILTER":
-           print("IF1")
            list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).filter_by(brand=brand).all()
         elif qual > 0:
-            print("IF2")
             list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).all()
         elif brand != "NOFILTER":
-           print("IF3")
            list = Products.query.filter_by(category=category).filter_by(brand=brand).all()
         else:
-            print("IF4")
             list = Products.query.filter_by(category=category).all()
 
 
