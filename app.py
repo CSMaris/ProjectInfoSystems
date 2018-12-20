@@ -13,7 +13,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///Database.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DATAB.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -22,6 +22,7 @@ class Users(db.Model):
     __tablename__ = "Users"
     email=db.Column(db.String, primary_key=True)
     password=db.Column(db.String, nullable=True)
+    city=db.Column(db.String, nullable=True)
     products=db.relationship("ConsumerProducts", back_populates="consumer")
 
 class ConsumerProducts(db.Model):
@@ -332,6 +333,10 @@ def profileS():
 def products():
  flag=True
  list=[]
+ mymail = session['email']
+ me = Users.query.get(mymail.upper())
+ city = me.city
+ superCity = Supermarkets.query.filter_by(city=city).all()
  category = session['category']
  filterForm = FilterForm()
  filterForm.myBrands(bs)
@@ -345,17 +350,50 @@ def products():
         qual = int(filterForm.quality.data)
         brand = filterForm.brand.data
         if qual > 0 and brand != "NOFILTER":
-           list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).filter_by(brand=brand).all()
+            for s in superCity:
+                sells = Sells.query.filter_by(right_id=s.email)
+                for sell in sells:
+                    prod = Products.query.get(sell.left_id)
+                    if prod.category == category and prod not in list and prod.qualityInt == qual and prod.brand==brand:
+                        list.append(prod)
+           #list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).filter_by(brand=brand).all()
         elif qual > 0:
-            list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).all()
+            for s in superCity:
+                sells = Sells.query.filter_by(right_id=s.email)
+                for sell in sells:
+                    prod = Products.query.get(sell.left_id)
+                    if prod.category == category and prod not in list and prod.qualityInt== qual:
+                        list.append(prod)
+            #list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).all()
         elif brand != "NOFILTER":
-           list = Products.query.filter_by(category=category).filter_by(brand=brand).all()
+            for s in superCity:
+                sells = Sells.query.filter_by(right_id=s.email)
+                for sell in sells:
+                    prod = Products.query.get(sell.left_id)
+                    if prod.category == category and prod not in list and prod.brand==brand:
+                        list.append(prod)
+           #list = Products.query.filter_by(category=category).filter_by(brand=brand).all()
         else:
-            list = Products.query.filter_by(category=category).all()
+            for s in superCity:
+                sells = Sells.query.filter_by(right_id=s.email)
+                for sell in sells:
+                    prod = Products.query.get(sell.left_id)
+                    if prod.category == category and prod not in list:
+                        list.append(prod)
+            #list = Products.query.filter_by(category=category).all()
 
 
  if(flag):
-     list=Products.query.filter_by(category=category).all()
+     for s in superCity:
+         sells=Sells.query.filter_by(right_id=s.email)
+         for sell in sells:
+             prod=Products.query.get(sell.left_id)
+             if prod.category == category and prod not in list:
+                 list.append(prod)
+
+
+
+     #list=Products.query.filter_by(category=category).all()
 
  products=[]
  for product in list:
@@ -411,7 +449,8 @@ def signupc():
             session['password'] = form2.password.data
             password = bcrypt.generate_password_hash(form2.password.data)
             reg = Users(  email=form2.email.data.upper(),
-                          password=password )
+                          password=password,
+                          city=form2.city.data)
             db.session.add(reg)
             db.session.commit()
             return redirect(url_for('homec'))
@@ -434,7 +473,7 @@ def signups():
         reg = Supermarkets(email=form2.email.data.upper(),
                            password=password,
                            name=form2.name.data,
-                           city=form2.city.data,
+                           city=form2.city.data.upper(),
                            tel=form2.tel.data,
                            address=form2.address.data )
 

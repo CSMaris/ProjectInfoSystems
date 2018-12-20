@@ -13,8 +13,10 @@ class loginForm(FlaskForm):
 
 
 class signupFormC(FlaskForm):
+    cities=[('TORINO', 'TORINO'), ('MILANO', 'MILANO'), ('ROMA', 'ROMA')]
     email = StringField('Email', validators=[InputRequired(), Email()])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=20)])
+    city=SelectField('City', choices=cities, validators=[InputRequired()])
 
 class signupFormS(FlaskForm):
     email = StringField('Email', validators=[InputRequired(), Email()])
