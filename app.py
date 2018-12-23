@@ -13,7 +13,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DATAB.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DATABASE.db'
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 
@@ -83,8 +83,22 @@ class Sells(db.Model):
     product = db.relationship("Products", back_populates="supermarkets")
     supermarket = db.relationship("Supermarkets", back_populates="products")
 
-cats=[('category1','cat1'),( 'category2','cat2'),( 'category3','cat3')]
-bs=[('Barilla','Barilla'),( 'Ferrero','Ferrero'),( 'Nestle','Nestle')]
+cats=[('Pasta&Rice','Pasta&Rice'),( 'Cheese','Cheese'),( 'Biscuits','Biscuits'),('Crackes&Breadsticks','Crackers&Breadsticks'),
+      ('Sweets','Sweets'),('Water','Water'),('Non-alcoholic drinks','Non-alcoholic drinks'),('Alcoholic drinks','Alcoholic drinks'),('Frozen food','Frozen food'),
+      ('Yogurts%Milk','Yogurts&Milk'),('Meat&Fish','Meat&Fish'),('Chips','Chips'),('Seasoning','Seasoning'),('Pets food','Pets food')]
+bs=[('Barilla','Barilla'),('Buitoni','Buitoni'),('Knorr','Knorr'),('Fini','Fini'), ('Rana','Rana'),('Agnesi','Agnesi'),('Divella','Divella'),('Scotti','Scotti'),('Flora','Flora'),
+    ('Galbani', 'Galbani'), ('Camemebert', 'Camembert'), ('Prealpi', 'Prealpi'), ('Biraghi', 'Biraghi'), ('Mulino bianco', 'Mulino bianco'),
+    ('Colussi', 'Colussi'), ('Galbusera', 'Galbusera'), ('Gentilini', 'Gentilini'), ('Pavesi', 'Pavesi'),
+    ('Balocco', 'Balocco'), ('Misura', 'Misura'), ('Saiwa', 'Saiwa'), ('Ferrero', 'Ferrero'), ('Nestle', 'Nestle'),
+    ('Milka', 'Milka'), ('Lindt', 'Lindt'), ('Novi', 'Novi'), ('Cameo', 'Cameo'),
+    ('Haribo', 'Haribo'), ('Dufour', 'Dufour'), ('Caffarel', 'Caffarel'), ('Levissima', 'Levissima'), ('Guizza', 'Guizza'),
+    ('Rocchetta', 'Rocchetta'), ('Vitasnella', 'Vitasnella'), ('CocaCola', 'CocaCola'), ('Lipton', 'Lipton'),
+    ('Bravo', 'Bravo'), ('Santal', 'Santal'), ('Sanbitter', 'Sanbitter'), ('Baileys', 'Baileys'), ('Martini', 'Martini'),
+    ('Campari', 'Campari'), ('Bacardi', 'Bacardi'), ('Orogel', 'Orogel'), ('Findus', 'Findus'),
+    ('Bonduelle', 'Bonduelle'), ('Activia', 'Activia'), ('Muller', 'Muller'), ('Amadori', 'Amadori'), ('Simmenthal', 'Simmenthal'),
+    ('RIO mare', 'RIO mare'), ('Pai', 'Pai'), ('San Carlo', 'San Carlo'), ('Pringles', 'Pringles'),
+    ('Chipster', 'Chipster'), ('Carapelli', 'Carapelli'), ('Monini', 'Monini'), ('Cirio', 'Cirio'), ('Bertolli', 'Bertolli'),
+    ('Ponti', 'Ponti'), ('Gourmet', 'Gourmet'), ('Felix', 'Felix'), ('Friskies', 'Friskies')]
 
 
 @app.before_first_request
