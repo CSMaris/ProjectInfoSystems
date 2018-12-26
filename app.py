@@ -7,15 +7,23 @@ from flask_bootstrap import Bootstrap
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
+from flask_mail import Mail, Message
 
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
-Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DATABASE.db'
+app.config['MAIL_SERVER']='smtp.mail.com'
+app.config['MAIL_PORT']=587
+app.config['MAIL_TLS']=True
+app.config['MAIL_USERNAME']='signedupnoreply@gmail.com'
+app.config['MAIL_PASSWORD']='passwordInfoSystemsProject'
+
+Bootstrap(app)
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
+mailobject=Mail(app)
 
 
 class Users(db.Model):
@@ -104,6 +112,14 @@ bs=[('Barilla','Barilla'),('Buitoni','Buitoni'),('Knorr','Knorr'),('Fini','Fini'
 @app.before_first_request
 def setup_db():
     db.create_all()
+
+
+def send_mail(to,subject,template,**kwargs):
+    msg=Message(subject,recipients=[to],sender=app.config['MAIL_USERNAME'])
+    msg.body= render_template(template + '.txt',**kwargs)
+    msg.html= render_template(template + '.html',**kwargs)
+    mailobject.send(msg)
+
 
 
 
@@ -438,12 +454,14 @@ def log():
         user=Users.query.filter_by(email=form1.email.data.upper()).first()
         supermarket=Supermarkets.query.filter_by(email=form1.email.data.upper()).first()
         if user and bcrypt.check_password_hash(user.password,form1.password.data):
-           session['email'] = form1.email.data
-           session['password'] = form1.password.data
-           return redirect(url_for('homec') )
+            session['email'] = form1.email.data
+            session['password'] = form1.password.data
+            send_mail(session['email'], 'Test message', 'mail', message_body='Hi this is a test')
+            return redirect(url_for('homec') )
         elif supermarket and bcrypt.check_password_hash(supermarket.password,form1.password.data):
             session['email'] = form1.email.data
             session['password'] = form1.password.data
+            send_mail(session['email'], 'Test message', 'mail', message_body='Hi this is a test')
             return redirect(url_for('homes') )
         else:
            message='INCORRECT CREDENTIALS'
