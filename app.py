@@ -17,8 +17,8 @@ app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DATABASE.db'
 app.config['MAIL_SERVER']='smtp.mail.com'
 app.config['MAIL_PORT']=587
 app.config['MAIL_TLS']=True
-app.config['MAIL_USERNAME']='signedupnoreply@gmail.com'
-app.config['MAIL_PASSWORD']='passwordInfoSystemsProject'
+app.config['MAIL_USERNAME']=os.environ['MAIL_USERNAME']
+app.config['MAIL_PASSWORD']=os.environ['MAIL_PASSWORD']
 
 Bootstrap(app)
 db = SQLAlchemy(app)
@@ -445,6 +445,8 @@ def products():
 
  return render_template('productspage.html', products=products, filterForm=filterForm)
 
+
+@app.route('/', methods=['POST', 'GET'])
 @app.route('/loginPage', methods=['POST', 'GET'])
 def log():
     form1=loginForm()
@@ -456,12 +458,10 @@ def log():
         if user and bcrypt.check_password_hash(user.password,form1.password.data):
             session['email'] = form1.email.data
             session['password'] = form1.password.data
-            send_mail(session['email'], 'Test message', 'mail', message_body='Hi this is a test')
             return redirect(url_for('homec') )
         elif supermarket and bcrypt.check_password_hash(supermarket.password,form1.password.data):
             session['email'] = form1.email.data
             session['password'] = form1.password.data
-            send_mail(session['email'], 'Test message', 'mail', message_body='Hi this is a test')
             return redirect(url_for('homes') )
         else:
            message='INCORRECT CREDENTIALS'
@@ -485,6 +485,7 @@ def signupc():
                           city=form2.city.data)
             db.session.add(reg)
             db.session.commit()
+            send_mail(session['email'], 'Welcome', 'mail', message_body='Welcome mail')
             return redirect(url_for('homec'))
 
     return render_template('signupC.html', form2=form2, message=message)
@@ -511,6 +512,7 @@ def signups():
 
         db.session.add(reg)
         db.session.commit()
+        send_mail(session['email'], 'Welcome', 'mail', message_body='Welcome mail')
         return redirect(url_for('homes'))
 
     return render_template('signupS.html', form2=form2, message=message)
