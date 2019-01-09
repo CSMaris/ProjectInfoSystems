@@ -13,7 +13,7 @@ from flask_mail import Mail, Message
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DATABASE.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DATA.db'
 app.config['MAIL_SERVER']='smtp.mail.com'
 app.config['MAIL_PORT']=587
 app.config['MAIL_TLS']=True
@@ -43,14 +43,6 @@ class ConsumerProducts(db.Model):
     product = db.relationship("Products", back_populates="consumers")
     consumer = db.relationship("Users", back_populates="products")
 
-class Comments(db.Model):
-    __tablename__ = "Comments"
-    id=db.Column(db.Integer, primary_key=True)
-    text=db.Column(db.TEXT,nullable=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('Products.id'))
-
-
-
 class Products(db.Model):
     __tablename__ = "Products"
     id=db.Column(db.Integer,primary_key=True)
@@ -64,9 +56,16 @@ class Products(db.Model):
     consumers=db.relationship("ConsumerProducts", back_populates="product")
     supermarkets= db.relationship("Sells", back_populates="product")
     comments = db.relationship('Comments', backref='product')
-
     def __repr__(self):
         return "<Product %r>" % self.name
+
+class Comments(db.Model):
+    __tablename__ = "Comments"
+    id=db.Column(db.Integer, primary_key=True)
+    text=db.Column(db.TEXT,nullable=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('Products.id'))
+
+
 
 class Supermarkets(db.Model):
     __tablename__ = "Supermarkets"
@@ -77,8 +76,6 @@ class Supermarkets(db.Model):
     tel=db.Column(db.String,nullable=True, unique=True)
     products = db.relationship("Sells", back_populates="supermarket")
     password = db.Column(db.String(20), nullable=True)
-
-
     def __repr__(self):
         return "<Supermarket %r>" % self.name
 
@@ -91,19 +88,19 @@ class Sells(db.Model):
     product = db.relationship("Products", back_populates="supermarkets")
     supermarket = db.relationship("Supermarkets", back_populates="products")
 
-cats=[('Pasta&Rice','Pasta&Rice'),( 'Cheese','Cheese'),( 'Biscuits','Biscuits'),('Crackes&Breadsticks','Crackers&Breadsticks'),
+cats=[('Pasta&Rice','Pasta&Rice'),('Fruits','Fruits'),( 'Cheese','Cheese'),( 'Biscuits','Biscuits'),('Crackes&Breadsticks','Crackers&Breadsticks'),
       ('Sweets','Sweets'),('Water','Water'),('Non-alcoholic drinks','Non-alcoholic drinks'),('Alcoholic drinks','Alcoholic drinks'),('Frozen food','Frozen food'),
       ('Yogurts%Milk','Yogurts&Milk'),('Meat&Fish','Meat&Fish'),('Chips','Chips'),('Seasoning','Seasoning'),('Pets food','Pets food')]
-bs=[('Barilla','Barilla'),('Buitoni','Buitoni'),('Knorr','Knorr'),('Fini','Fini'), ('Rana','Rana'),('Agnesi','Agnesi'),('Divella','Divella'),('Scotti','Scotti'),('Flora','Flora'),
+bs=[('Barilla','Barilla'), ('Martini', 'Martini'), ('Muller', 'Muller'), ('Guizza', 'Guizza'),('Chiquita','Chiquita'),('Fage','Fage'),('Buitoni','Buitoni'),('Knorr','Knorr'),('Fini','Fini'), ('Rana','Rana'),('Agnesi','Agnesi'),('Divella','Divella'),('Scotti','Scotti'),('Flora','Flora'),
     ('Galbani', 'Galbani'), ('Camemebert', 'Camembert'), ('Prealpi', 'Prealpi'), ('Biraghi', 'Biraghi'), ('Mulino bianco', 'Mulino bianco'),
     ('Colussi', 'Colussi'), ('Galbusera', 'Galbusera'), ('Gentilini', 'Gentilini'), ('Pavesi', 'Pavesi'),
     ('Balocco', 'Balocco'), ('Misura', 'Misura'), ('Saiwa', 'Saiwa'), ('Ferrero', 'Ferrero'), ('Nestle', 'Nestle'),
     ('Milka', 'Milka'), ('Lindt', 'Lindt'), ('Novi', 'Novi'), ('Cameo', 'Cameo'),
-    ('Haribo', 'Haribo'), ('Dufour', 'Dufour'), ('Caffarel', 'Caffarel'), ('Levissima', 'Levissima'), ('Guizza', 'Guizza'),
+    ('Haribo', 'Haribo'), ('Dufour', 'Dufour'), ('Caffarel', 'Caffarel'), ('Levissima', 'Levissima'),
     ('Rocchetta', 'Rocchetta'), ('Vitasnella', 'Vitasnella'), ('CocaCola', 'CocaCola'), ('Lipton', 'Lipton'),
-    ('Bravo', 'Bravo'), ('Santal', 'Santal'), ('Sanbitter', 'Sanbitter'), ('Baileys', 'Baileys'), ('Martini', 'Martini'),
+    ('Bravo', 'Bravo'), ('Santal', 'Santal'), ('Sanbitter', 'Sanbitter'), ('Baileys', 'Baileys'),
     ('Campari', 'Campari'), ('Bacardi', 'Bacardi'), ('Orogel', 'Orogel'), ('Findus', 'Findus'),
-    ('Bonduelle', 'Bonduelle'), ('Activia', 'Activia'), ('Muller', 'Muller'), ('Amadori', 'Amadori'), ('Simmenthal', 'Simmenthal'),
+    ('Bonduelle', 'Bonduelle'), ('Activia', 'Activia'), ('Amadori', 'Amadori'), ('Simmenthal', 'Simmenthal'),
     ('RIO mare', 'RIO mare'), ('Pai', 'Pai'), ('San Carlo', 'San Carlo'), ('Pringles', 'Pringles'),
     ('Chipster', 'Chipster'), ('Carapelli', 'Carapelli'), ('Monini', 'Monini'), ('Cirio', 'Cirio'), ('Bertolli', 'Bertolli'),
     ('Ponti', 'Ponti'), ('Gourmet', 'Gourmet'), ('Felix', 'Felix'), ('Friskies', 'Friskies')]
@@ -162,8 +159,6 @@ def newProduct():
          message = 'Product successfully added'
 
         else:
-
-
          productS = Sells.query.filter_by(right_id=session['email'].upper()).all()
          prodotti=Products.query.filter_by(name=form.name.data).all()
          flag2=True
@@ -172,16 +167,10 @@ def newProduct():
            if product.name == form.name.data:
                id=product.id
 
-
-
          for product in productS:
             if Products.query.get(product.left_id).name == form.name.data:
                 flag2=False
                 break
-
-
-
-
 
          if(flag2):
              s = Sells(price=form.price.data)
@@ -191,16 +180,11 @@ def newProduct():
          else:
              message='You\'ve already uploaded this product'
 
-
     db.session.commit()
-
-
-
     return render_template('newProduct.html',form=form, message=message)
 
 @app.route('/product', methods=['POST','GET'])
 def product():
-
     formQ=BuyForm()
     formC=CommentForm()
     p=session['selectedProduct']
@@ -217,9 +201,6 @@ def product():
         supermarketMail=s.right_id
         supermarket=Supermarkets.query.get(supermarketMail)
         supermarketsSell.append({'name':supermarket.name, 'address':supermarket.address, 'price':s.price, 'productid':p, 'smail':supermarket.email})
-
-
-
 
     if formQ.is_submitted() | formC.is_submitted():
       if request.form['which-form'] == 'formQ':
@@ -296,22 +277,18 @@ def listS():
         brand=product.brand
         price=s.price
         list.append({'namep':namep,'brand':brand, 'price':price, 'idp':idp })
-
     if 'Remove' in request.form:
         pid=request.values.get('product')
         s=Sells.query.filter_by(left_id=pid).filter_by(right_id=session['email'].upper()).first()
         db.session.delete(s)
         db.session.commit()
-        # check if that was the last supermarket selling the product
-        sl=Sells.query.filter_by(left_id=pid).all()
-
+        sl=Sells.query.filter_by(left_id=pid).all() # check if that was the last supermarket selling the product
         if len(sl) == 0:
             p=Products.query.get(pid)
             path = 'C:\Users\Stefan Maris\PycharmProjects\Project' +p.image
             os.remove(path)
             db.session.delete(p)
             db.session.commit()
-
         return redirect(url_for('listS'))
     if priceForm.validate_on_submit():
         pid = request.values.get('product')
@@ -320,19 +297,9 @@ def listS():
         db.session.commit()
         return redirect(url_for('listS'))
 
-
     return render_template('listS.html', list=list, priceForm=priceForm)
 
 
-@app.route('/homec', methods=['POST','GET'])
-def homec():
-    formhomec=searchCategoryForm()
-    formhomec.myChoices(cats)
-    if formhomec.validate_on_submit():
-        session['category']=formhomec.category.data
-        return redirect(url_for('products'))
-
-    return render_template('homec.html', formhomec=formhomec)
 
 @app.route('/profile', methods=['POST','GET'])
 def profile():
@@ -358,6 +325,15 @@ def profileS():
 
     return render_template('profileS.html', form=form)
 
+@app.route('/homec', methods=['POST','GET'])
+def homec():
+    formhomec=searchCategoryForm()
+    formhomec.myChoices(cats)
+    if formhomec.validate_on_submit():
+        session['category']=formhomec.category.data
+        return redirect(url_for('products'))
+
+    return render_template('homec.html', formhomec=formhomec)
 
 @app.route('/products',methods=['POST','GET'] )
 def products():
@@ -386,7 +362,6 @@ def products():
                     prod = Products.query.get(sell.left_id)
                     if prod.category == category and prod not in list and prod.qualityInt == qual and prod.brand==brand:
                         list.append(prod)
-           #list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).filter_by(brand=brand).all()
         elif qual > 0:
             for s in superCity:
                 sells = Sells.query.filter_by(right_id=s.email)
@@ -394,7 +369,6 @@ def products():
                     prod = Products.query.get(sell.left_id)
                     if prod.category == category and prod not in list and prod.qualityInt== qual:
                         list.append(prod)
-            #list = Products.query.filter_by(category=category).filter_by(qualityInt = qual).all()
         elif brand != "NOFILTER":
             for s in superCity:
                 sells = Sells.query.filter_by(right_id=s.email)
@@ -402,7 +376,6 @@ def products():
                     prod = Products.query.get(sell.left_id)
                     if prod.category == category and prod not in list and prod.brand==brand:
                         list.append(prod)
-           #list = Products.query.filter_by(category=category).filter_by(brand=brand).all()
         else:
             for s in superCity:
                 sells = Sells.query.filter_by(right_id=s.email)
@@ -410,8 +383,6 @@ def products():
                     prod = Products.query.get(sell.left_id)
                     if prod.category == category and prod not in list:
                         list.append(prod)
-            #list = Products.query.filter_by(category=category).all()
-
 
  if(flag):
      for s in superCity:
@@ -420,11 +391,6 @@ def products():
              prod=Products.query.get(sell.left_id)
              if prod.category == category and prod not in list:
                  list.append(prod)
-
-
-
-     #list=Products.query.filter_by(category=category).all()
-
  products=[]
  for product in list:
      quality=0
@@ -440,9 +406,7 @@ def products():
          quality=u'★★★★'
      elif product.qualityInt ==5:
          quality=u'★★★★★'
-
      products.append({'name':product.name,'image':product.image,'brand':product.brand,'quality':quality, 'id':product.id})
-
  return render_template('productspage.html', products=products, filterForm=filterForm)
 
 

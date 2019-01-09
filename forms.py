@@ -19,10 +19,11 @@ class signupFormC(FlaskForm):
     city=SelectField('City', choices=cities, validators=[InputRequired()])
 
 class signupFormS(FlaskForm):
+    cities = [('TORINO', 'TORINO'), ('MILANO', 'MILANO'), ('ROMA', 'ROMA')]
     email = StringField('Email', validators=[InputRequired(), Email()])
     name = StringField('Name', validators=[InputRequired()])
     address = StringField('Address', validators=[InputRequired()])
-    city = StringField('City', validators=[InputRequired()])
+    city = SelectField('City', choices=cities, validators=[InputRequired()])
     tel = TelField('Tel', validators=[TelField])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=20)])
 
@@ -61,9 +62,10 @@ class CommentForm(FlaskForm):
     comment=TextAreaField('Write here your comment...', validators=[InputRequired()])
 
 class ProfileForm(FlaskForm):
+    cities = [('TORINO', 'TORINO'), ('MILANO', 'MILANO'), ('ROMA', 'ROMA')]
     name = StringField('Name', validators=[InputRequired()])
     address = StringField('Address',validators=[InputRequired()])
-    city = StringField('City',validators=[InputRequired()])
+    city = SelectField('City', choices=cities, validators=[InputRequired()])
     tel=TelField('Tel',validators=[TelField])
 
 class FilterForm(FlaskForm):
