@@ -13,7 +13,7 @@ from flask_mail import Mail, Message
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "vjhbgkyutgum"
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DATA.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///DATABASE.db'
 app.config['MAIL_SERVER']='smtp.mail.com'
 app.config['MAIL_PORT']=587
 app.config['MAIL_TLS']=True
